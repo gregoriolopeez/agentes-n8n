@@ -1,0 +1,31 @@
+### Pregunta de clima
+POST http://localhost:5678/webhook/chatbot
+Content-Type: application/json
+
+{
+  "mensaje": "¿Qué tiempo hace hoy en Madrid?"
+}
+
+### Pregunta sobre país
+POST http://localhost:5678/webhook/chatbot
+Content-Type: application/json
+
+{
+  "mensaje": "Dime información sobre España"
+}
+
+### Pregunta de Wikipedia
+POST http://localhost:5678/webhook/chatbot
+Content-Type: application/json
+
+{
+  "mensaje": "¿Qué es Granada?"
+}
+
+### Pregunta general
+POST http://localhost:5678/webhook/chatbot
+Content-Type: application/json
+
+{
+  "mensaje": "Explícame qué es la inteligencia artificial"
+}
