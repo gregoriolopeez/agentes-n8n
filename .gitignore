@@ -1,9 +1,0 @@
-.env
-node_modules/
-*.log
-.DS_Store
-.vscode/
-docker/postgres_data/
-docker/n8n_data/
-docker/ollama_data/
-docker/qdrant_data/
