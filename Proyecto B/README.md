@@ -170,15 +170,7 @@ Dentro de la carpeta `tests/` se facilita el archivo `pruebas.http`. En él se e
 - [x] Identificación y testing de todas las APIs involucradas (`pruebas.http`)
 - [x] Capturas informativas añadidas al README con Markdown
 - [x] Workflow de n8n exportado al proyecto (`n8n/workflows/`)
-- [ ] Guía de instalación y despliegue documentada
+- [x] Guía de instalación y despliegue documentada
 - [ ] Vídeo demostrativo grabado y enlazado
 
 ---
-
-## 👨‍💻 Equipo de Desarrollo
-
-Proyecto realizado conjuntamente por:
-
-- **_Gregorio López_**
-- **_Pablo Hernández_**
-
