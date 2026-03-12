@@ -91,7 +91,7 @@ _(Configuración del nodo de credenciales de PostgreSQL en n8n)_
 
 1. **Clonar el repositorio:**
     ```bash
-    git clone <agentes-n8n>
+    git clone https://github.com/gregoriolopeez/agentes-n8n.git
     cd hito3-automatizacion
     ```
 
