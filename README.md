@@ -79,6 +79,78 @@ _(Configuración del nodo de credenciales de PostgreSQL en n8n)_
 
 ---
 
+## 🔧 Guía de Instalación y Despliegue
+
+### Requisitos Previos
+
+- Docker y Docker Compose instalados
+- Token de Telegram Bot obtenido de [@BotFather](https://t.me/botfather)
+- Acceso a la instancia de Ollama en `jarvis.ieshlanz.es`
+
+### Pasos de Instalación
+
+1. **Clonar el repositorio:**
+    ```bash
+    git clone <agentes-n8n>
+    cd hito3-automatizacion
+    ```
+
+2. **Configurar variables de entorno:**
+    ```bash
+    cp docker/.env.example docker/.env
+    # Editar docker/.env con tus credenciales
+    ```
+
+3. **Iniciar contenedores:**
+    ```bash
+    cd docker
+    docker-compose up -d
+    ```
+
+4. **Importar workflow en n8n:**
+    - Acceder a `http://localhost:5678`
+    - Importar archivo de `n8n/workflows/`
+    - Configurar credenciales de Telegram y PostgreSQL
+
+5. **Verificar base de datos:**
+    - Acceder a pgAdmin: `http://localhost:5050`
+    - Ejecutar script `postgres/init.sql`
+
+---
+
+## 💡 Demostración y Ejemplos
+
+### Ejemplo 1: Consulta del Clima
+
+**Usuario:** `¿Qué tiempo hace en Madrid?`
+
+**Proceso:**
+- Ollama clasifica como consulta climatológica
+- Open-Meteo obtiene coordenadas y predicción
+- Respuesta: `En Madrid: 22°C, despejado con vientos moderados`
+
+### Ejemplo 2: Información Geográfica
+
+**Usuario:** `Cuéntame sobre Francia`
+
+**Proceso:**
+- Ollama identifica búsqueda informativa
+- REST Countries retorna datos del país
+- Wikipedia complementa con información cultural
+- Respuesta estructurada con datos verificados
+
+### Ejemplo 3: Búsqueda General
+
+**Usuario:** `¿Quién fue Albert Einstein?`
+
+**Proceso:**
+- Ollama enruta a búsqueda enciclopédica
+- Wikipedia API retorna resumen
+- Ollama genera respuesta contextualizada
+- Historial guardado en PostgreSQL
+
+---
+
 ## 📋 Pruebas Unitarias de APIs (REST)
 
 Dentro de la carpeta `tests/` se facilita el archivo `pruebas.http`. En él se encuentran testeadas todas las peticiones a las diferentes APIs utilizadas en el proyecto.
@@ -98,6 +170,7 @@ Dentro de la carpeta `tests/` se facilita el archivo `pruebas.http`. En él se e
 - [x] Identificación y testing de todas las APIs involucradas (`pruebas.http`)
 - [x] Capturas informativas añadidas al README con Markdown
 - [x] Workflow de n8n exportado al proyecto (`n8n/workflows/`)
+- [ ] Guía de instalación y despliegue documentada
 - [ ] Vídeo demostrativo grabado y enlazado
 
 ---
@@ -106,5 +179,6 @@ Dentro de la carpeta `tests/` se facilita el archivo `pruebas.http`. En él se e
 
 Proyecto realizado conjuntamente por:
 
-- **[Gregorio López]**
-- **[Pablo Hernández]**
+- **_Gregorio López_**
+- **_Pablo Hernández_**
+
