@@ -3,7 +3,6 @@
 ![Estado](https://img.shields.io/badge/Estado-En_Desarrollo-orange)
 ![n8n](https://img.shields.io/badge/n8n-Automatización-ff6c37)
 ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-Base_de_Datos-336791)
-![Ollama](https://img.shields.io/badge/Ollama-IA_Local-white)
 
 Proyecto elaborado para el módulo **Desarrollo de Agentes IA para Web** (2º DAW)  
 📍 **IES Hermenegildo Lanz**
