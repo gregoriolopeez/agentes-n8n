@@ -1,31 +1,46 @@
-### Pregunta de clima
-POST http://localhost:5678/webhook/chatbot
+### Test Geocoding API (Open-Meteo)
+# Se usa para buscar las coordenadas de una ciudad antes de pedir el clima
+GET https://geocoding-api.open-meteo.com/v1/search?name=Barcelona&count=1&language=es&format=json
+Accept: application/json
+
+---
+
+### Test Open-Meteo API
+# Se usa para obtener el clima usando las coordenadas obtenidas en el paso anterior (Ej: Barcelona)
+GET https://api.open-meteo.com/v1/forecast?latitude=41.3851&longitude=2.1734&daily=precipitation_sum,temperature_2m_max,temperature_2m_min&timezone=auto&forecast_days=7
+Accept: application/json
+
+---
+
+### Test REST Countries API
+# Se usa para obtener datos geográficos de un país (Ej: Francia)
+GET https://restcountries.com/v3.1/name/Francia
+Accept: application/json
+
+---
+
+### Test Wikipedia API
+# Se usa para obtener el resumen de un tema o persona (Ej: Machine Learning)
+GET https://es.wikipedia.org/api/rest_v1/page/summary/Machine_learning
+User-Agent: BotProyecto/1.0
+Accept: application/json
+
+---
+
+### Test Joke API
+# Se usa para obtener un chiste aleatorio en español
+GET https://v2.jokeapi.dev/joke/Programming?lang=es
+Accept: application/json
+
+---
+
+### Test Ollama API (Local)
+# Esto comprobará si Ollama está funcionando y respondiendo correctamente en tu equipo
+POST https://jarvis.ieshlanz.es/api/generate
 Content-Type: application/json
 
 {
-  "mensaje": "¿Qué tiempo hace hoy en Madrid?"
-}
-
-### Pregunta sobre país
-POST http://localhost:5678/webhook/chatbot
-Content-Type: application/json
-
-{
-  "mensaje": "Dime información sobre España"
-}
-
-### Pregunta de Wikipedia
-POST http://localhost:5678/webhook/chatbot
-Content-Type: application/json
-
-{
-  "mensaje": "¿Qué es Granada?"
-}
-
-### Pregunta general
-POST http://localhost:5678/webhook/chatbot
-Content-Type: application/json
-
-{
-  "mensaje": "Explícame qué es la inteligencia artificial"
+  "model": "mistral:instruct",
+  "prompt": "Cuéntame un dato interesante sobre programación.",
+  "stream": false
 }
