@@ -75,7 +75,7 @@ CREATE TABLE rag_documents (
 );
 ```
 
-![creación de tabla en Postgres](docs/capturas/tabla-postgress.png)
+![creación de tabla en Postgres](docs/capturas/tabla-posgress.png)
 
 ---
 
@@ -96,7 +96,7 @@ Al no disponer de un ordenador que soporte bien los modelos de Ollama, se utiliz
 
 #### Ingesta de documentos
 
-![ingesta de documentos](docs/capturas/ingesta-rag.png)
+![ingesta de documentos](docs/capturas/ingesta-exito.png)
 
 - **Upload Form:** acepta archivos `.pdf, .txt, .doc, .docx`.  
     Al ejecutar el flujo, se abre una pestaña con la url  
