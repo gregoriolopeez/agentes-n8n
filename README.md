@@ -18,6 +18,7 @@ Proyecto realizado conjuntamente por:
 Este repositorio contiene un proyecto de automatización inteligente desarrollado con n8n, Ollama y PostgreSQL:
 
 **Chatbot Multiherramienta:** Sistema conversacional que analiza mensajes del usuario y decide automáticamente qué herramienta externa consultar, integrando capacidades de procesamiento natural del lenguaje con múltiples fuentes de datos.
+***RAG (Retrieval-Augmented Generation):** Sistema que combina recuperación de información con generación de texto, utilizando Ollama para generar respuestas basadas en datos recuperados de PostgreSQL.
 
 ---
 
