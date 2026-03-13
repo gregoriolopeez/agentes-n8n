@@ -1,6 +1,6 @@
 # Proyecto A: Sistema RAG Educativo
 
-> Proyecto desarrollado por **Pablo Hernandez** y **Gregorio López**  
+> Proyecto desarrollado por **Pablo Hernández** y **Gregorio López**  
 > IES Hermenegildo Lanz - 2º DAW - Desarrollo de Agentes IA para Web  
 > Profesor: Isaías Fernández Lozano
 
