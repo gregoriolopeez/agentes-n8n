@@ -4,15 +4,6 @@
 > IES Hermenegildo Lanz - 2º DAW - Desarrollo de Agentes IA para Web  
 > Profesor: Isaías Fernández Lozano
 
-## 👨‍💻 Equipo de Desarrollo
-
-Proyecto realizado conjuntamente por:
-
-- **_Gregorio López_**
-- **_Pablo Hernández_**
-
----
-
 ## 📋 Descripción General
 
 Este repositorio contiene un proyecto de automatización inteligente desarrollado con n8n, Ollama y PostgreSQL:
@@ -24,6 +15,15 @@ Este repositorio contiene un proyecto de automatización inteligente desarrollad
 
 ## 🎥 Vídeos de Demostración
 
-🔗 [Enlace al vídeo del proyecto de chatbot](https://youtu.be/Y3gsiqzWF0E)
+🔗 [Enlace al vídeo del proyecto de chatbot y RAG](https://youtu.be/Y3gsiqzWF0E)
+
+---
+
+## 👨‍💻 Equipo de Desarrollo
+
+Proyecto realizado conjuntamente por:
+
+- **_Gregorio López_**
+- **_Pablo Hernández_**
 
 ---

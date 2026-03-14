@@ -46,8 +46,12 @@ hito3-automatizacion/
 │   └── .env.example         # Ejemplo de variables de entorno para Docker
 ├── docs/
 │   └── capturas/            # Evidencias visuales de los flujos y estructura de DB
+|       ├── chatbot_db.png       # Captura de la estructura de la base de datos
+|       ├── conexiondb.png       # Captura de la configuración de conexión a DB
+|       └── Workflow.png         # Captura del workflow en n8n
 ├── n8n/
 │   └── workflows/           # Directorio para los workflows exportados (.json)
+|       └── Chatbot-Multiherramienta.json # Workflow principal del chatbot multiherramienta
 ├── postgres/
 │   └── init.sql             # Script SQL inicial (Crea tabla 'conversaciones_chatbot')
 ├── tests/
