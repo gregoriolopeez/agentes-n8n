@@ -24,6 +24,6 @@ Este repositorio contiene un proyecto de automatización inteligente desarrollad
 
 ## 🎥 Vídeos de Demostración
 
-🔗 [Enlace al vídeo del proyecto de chatbot]()
+🔗 [Enlace al vídeo del proyecto de chatbot](https://youtu.be/Y3gsiqzWF0E)
 
 ---
