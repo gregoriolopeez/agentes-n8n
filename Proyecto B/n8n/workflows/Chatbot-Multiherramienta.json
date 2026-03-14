@@ -1,0 +1,840 @@
+{
+  "name": "Chatbot-Multiherramienta",
+  "nodes": [
+    {
+      "parameters": {
+        "updates": [
+          "message"
+        ]
+      },
+      "type": "n8n-nodes-telegram-polling.telegramPollingTrigger",
+      "typeVersion": 1,
+      "position": [
+        -1216,
+        448
+      ],
+      "id": "d9123eac-96c2-4480-b88e-07c9f9156e17",
+      "name": "Telegram Trigger",
+      "credentials": {
+        "telegramApi": {
+          "id": "AEIsd98ELYC92pmO",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "64c134dd-398e-4220-a9b0-9d5cc77d340c",
+              "name": "message.message_id",
+              "value": "={{ $json.message.message_id }}",
+              "type": "number"
+            },
+            {
+              "id": "d4cb6f09-fe19-4912-8f20-2a93d0f44d2f",
+              "name": "message.chat.id",
+              "value": "={{ $json.message.chat.id }}",
+              "type": "number"
+            },
+            {
+              "id": "99d5e8a6-05fe-4358-9d4f-a91093a55f63",
+              "name": "message.chat.first_name",
+              "value": "={{ $json.message.chat.first_name }}",
+              "type": "string"
+            },
+            {
+              "id": "90325d16-ad0a-4fd0-93d3-7f7fa3c81c29",
+              "name": "message.text",
+              "value": "={{ $json.message.text }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -976,
+        448
+      ],
+      "id": "878ad1eb-98db-4e24-a629-820d277fd8f6",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "mistral:instruct",
+          "mode": "list",
+          "cachedResultName": "mistral:instruct"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "={\n  \"prompt\": \"Actúa como un sistema de clasificación de intención y extracción de entidades. Tu función es analizar el mensaje enviado por el usuario y determinar a qué tipo de consulta pertenece, además de identificar la palabra clave necesaria para realizar una consulta a una API externa.\\n\\nMENSAJE DEL USUARIO\\n{{ $json.message.text }}\\n\\nCATEGORÍAS PERMITIDAS\\nSolo puedes clasificar el mensaje en UNA de las siguientes categorías:\\n\\n1. Meteorologia\\nPreguntas relacionadas con el clima, el tiempo o la temperatura de una ciudad o localidad.\\nEjemplos: \\\"tiempo en Granada\\\", \\\"clima Madrid\\\", \\\"temperatura en Sevilla\\\".\\n\\n2. Geografia\\nConsultas sobre países, capitales, regiones o datos geográficos.\\nEjemplos: \\\"capital de Francia\\\", \\\"información sobre España\\\", \\\"datos de Alemania\\\".\\n\\n3. Wikipedia\\nConsultas de conocimiento general sobre personas, lugares, conceptos o eventos.\\nEjemplos: \\\"qué es la inteligencia artificial\\\", \\\"quién fue Albert Einstein\\\", \\\"historia de Marruecos\\\".\\n\\n4. Desconocido\\nTexto sin sentido, caracteres aleatorios, errores de teclado o preguntas que no encajan en ninguna de las categorías anteriores.\\n\\nTAREA\\nDebes analizar el mensaje del usuario y devolver un objeto JSON que contenga:\\n\\n- categoria: una de las cuatro categorías permitidas.\\n- mensaje: el mensaje original del usuario exactamente como se recibió.\\n- palabra: el término clave que se usará para consultar una API.\\n\\nREGLAS PARA EXTRAER \\\"palabra\\\"\\n\\nSi la categoría es \\\"Meteorologia\\\":\\nExtrae únicamente el nombre de la ciudad o localidad mencionada.\\nEjemplo: \\\"tiempo Granada\\\" → \\\"Granada\\\"\\n\\nSi la categoría es \\\"Geografia\\\":\\nExtrae el país o región principal de la consulta.\\nEjemplo: \\\"capital de Italia\\\" → \\\"Italia\\\"\\n\\nSi la categoría es \\\"Wikipedia\\\":\\nExtrae el concepto, persona o tema que se debe buscar.\\nReemplaza los espacios por \\\"%20\\\" para que pueda usarse en una URL.\\nEjemplo: \\\"Nikola Tesla\\\" → \\\"Nikola%20Tesla\\\"\\n\\nSi la categoría es \\\"Desconocido\\\":\\nDevuelve un string vacío \\\"\\\".\\n\\nFORMATO DE RESPUESTA\\nDebes devolver EXCLUSIVAMENTE un objeto JSON válido con la siguiente estructura:\\n\\n{\\n  \\\"categoria\\\": \\\"...\\\",\\n  \\\"mensaje\\\": \\\"...\\\",\\n  \\\"palabra\\\": \\\"...\\\"\\n}\\n\\nIMPORTANTE\\n- No añadas explicaciones.\\n- No incluyas texto fuera del JSON.\\n- No uses bloques de código.\\n- La respuesta debe ser únicamente el objeto JSON.\",\n  \"stream\": false,\n  \"format\": \"json\"\n}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.ollama",
+      "typeVersion": 1,
+      "position": [
+        -704,
+        448
+      ],
+      "id": "1e4a0d67-eab2-42df-9c8a-cfcfc2f47669",
+      "name": "Message a model",
+      "credentials": {
+        "ollamaApi": {
+          "id": "zJqJhqgh8JKXl9Ro",
+          "name": "Ollama account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.content.parseJson().categoria }}",
+                    "rightValue": "Meteorologia",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "3267bbd4-d1c3-42c2-9a6d-c9724646a62e"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Meteorología"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "b3807859-b440-4ad4-a2e5-0adfed51c014",
+                    "leftValue": "={{ $json.content.parseJson().categoria }}",
+                    "rightValue": "Geografia",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Geografía"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "3cfc375b-4084-4ff1-a54b-533115934742",
+                    "leftValue": "={{ $json.content.parseJson().categoria }}",
+                    "rightValue": "Wikipedia",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Wikipedia"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "58512e3e-c0f6-4aac-8c0a-f993b6b205d2",
+                    "leftValue": "={{ $json.content.parseJson().categoria }}",
+                    "rightValue": "Desconocido",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Desconocido"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.4,
+      "position": [
+        -336,
+        416
+      ],
+      "id": "7f2e500b-58b1-49ae-a375-2de517589b75",
+      "name": "Switch"
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "mistral:instruct",
+          "mode": "list",
+          "cachedResultName": "mistral:instruct"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "={\n  \"prompt\": \"Actúa como un asistente virtual que solo habla en español amable y conversacional de Telegram. Tu único objetivo es responder a la pregunta original del usuario utilizando la información en bruto (JSON) obtenida de nuestras bases de datos.\n\nINFORMACIÓN DE LA CONSULTA:\n- Pregunta del usuario: {{ $('Message a model').item.json.content.parseJson().mensaje }}\n- Categoría detectada: {{ $('Message a model').item.json.content.parseJson().categoria }}\n\nDATOS OBTENIDOS DE LA BASE DE DATOS (API):\n{{ JSON.stringify($json) }}\n\nINSTRUCCIONES IMPORTANTES\n\n1. Analiza cuidadosamente los datos proporcionados y localiza la información relevante que responda a la pregunta del usuario.\n\n2. Genera una respuesta natural, clara y fácil de entender en español.\n\n3. Adapta el estilo de la respuesta según la categoría detectada:\n\n   - Wikipedia:\n     Resume la información principal del tema en uno o dos párrafos breves. Prioriza los datos más relevantes y evita explicaciones excesivamente largas.\n   - Geografia:\n     Proporciona la información geográfica solicitada (por ejemplo país, capital, población, región, etc.) de forma clara y ordenada.\n   - Meteorologia:\n     Describe el clima actual de manera práctica y comprensible. Si hay datos de temperatura u otras condiciones, preséntalos de forma natural como lo haría una aplicación del tiempo.\n\n4. REGLA FUNDAMENTAL:\n   Nunca menciones que los datos provienen de JSON, APIs, bases de datos o sistemas internos. Debes responder como si esa información formara parte de tu conocimiento.\n\n5. Evita inventar información que no esté presente en los datos proporcionados. Si la información es insuficiente, responde de forma educada indicando que no hay datos suficientes para responder con precisión.\n\n6. Mantén un tono cercano y conversacional, adecuado para un chatbot de Telegram.\n\nFORMATO DE SALIDA\n\n- Devuelve únicamente el texto final que recibirá el usuario.\n- No devuelvas objetos JSON.\n- No utilices bloques de código.\n- Puedes usar Markdown simple compatible con Telegram (por ejemplo **negritas** si ayuda a mejorar la claridad).\n- La respuesta debe ser directa y lista para enviarse al usuario sin modificaciones adicionales.\",\n  \"stream\": false,\n  \"format\": \"json\"\n}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.ollama",
+      "typeVersion": 1,
+      "position": [
+        464,
+        464
+      ],
+      "id": "8c40223a-4786-4e55-94e3-ffea9b8505d2",
+      "name": "Respuesta con API",
+      "credentials": {
+        "ollamaApi": {
+          "id": "zJqJhqgh8JKXl9Ro",
+          "name": "Ollama account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// 1. Obtenemos el texto plano que ha generado la IA\nconst aiOutput = $input.first().json.content;\n\n// 2. Obtenemos los datos del usuario del nodo 'Edit Fields'\nconst userData = $('Edit Fields').first().json.message;\n\n// 3. Devolvemos la estructura final directa para la Base de Datos y Telegram\nreturn {\n  json: {\n    chat_id: userData.chat.id,\n    username: userData.chat.first_name,\n    mensajeUser: userData.text,\n    mensaje: aiOutput, // Pasamos el texto de la IA directamente aquí\n    fecha: new Date().toISOString()\n  }\n};"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        816,
+        400
+      ],
+      "id": "31521c31-0b0d-40b6-a0b2-38fb58b917fc",
+      "name": "Trimear respuesta"
+    },
+    {
+      "parameters": {
+        "schema": {
+          "__rl": true,
+          "mode": "list",
+          "value": "public"
+        },
+        "table": {
+          "__rl": true,
+          "value": "conversaciones_chatbot",
+          "mode": "list",
+          "cachedResultName": "conversaciones_chatbot"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "chatid": "={{ $json.chat_id }}",
+            "username": "={{ $json.username }}",
+            "mensajeuser": "={{ $json.mensajeUser }}",
+            "mensajeia": "={{ $json.mensaje }}",
+            "fecha": "={{ $json.fecha }}"
+          },
+          "matchingColumns": [
+            "id"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "chatid",
+              "displayName": "chatid",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "username",
+              "displayName": "username",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "mensajeuser",
+              "displayName": "mensajeuser",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "mensajeia",
+              "displayName": "mensajeia",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "fecha",
+              "displayName": "fecha",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "dateTime",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        1152,
+        464
+      ],
+      "id": "ba2dfff0-efe0-40b2-95aa-3152ec6de9bb",
+      "name": "Insert rows in a table",
+      "credentials": {
+        "postgres": {
+          "id": "7nFegT50xHLxaHCF",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "select",
+        "schema": {
+          "__rl": true,
+          "mode": "list",
+          "value": "public"
+        },
+        "table": {
+          "__rl": true,
+          "value": "conversaciones_chatbot",
+          "mode": "list",
+          "cachedResultName": "conversaciones_chatbot"
+        },
+        "where": {
+          "values": [
+            {
+              "column": "id",
+              "value": "={{ $json.id }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        1488,
+        416
+      ],
+      "id": "52d86185-b38f-4c3e-88c8-e5db5ede2c7a",
+      "name": "Select rows from a table",
+      "credentials": {
+        "postgres": {
+          "id": "7nFegT50xHLxaHCF",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $json.chatid }}",
+        "text": "={{ $json.mensajeia }}",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        1776,
+        448
+      ],
+      "id": "f3521eb2-49b0-42a2-acc6-b68fae467941",
+      "name": "Send a text message",
+      "webhookId": "d5cd6dd0-c7bc-409a-939d-64b5955c2350",
+      "credentials": {
+        "telegramApi": {
+          "id": "AEIsd98ELYC92pmO",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "=https://api.open-meteo.com/v1/forecast?latitude={{$json.results[0].latitude}}&longitude={{$json.results[0].longitude}}&daily=precipitation_sum,temperature_2m_max,temperature_2m_min&timezone=auto&forecast_days=1",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        176,
+        0
+      ],
+      "id": "81d5111a-b14f-45c6-a840-8ebd2641c0e0",
+      "name": "MeteoAPI"
+    },
+    {
+      "parameters": {
+        "url": "=https://restcountries.com/v3.1/name/{{$('Message a model').item.json.content.parseJson().palabra}}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        64,
+        368
+      ],
+      "id": "2ae8829e-e0ff-41da-97e3-b350d0562fe2",
+      "name": "REST Countries"
+    },
+    {
+      "parameters": {
+        "url": "=https://es.wikipedia.org/api/rest_v1/page/summary/{{ $('Message a model').item.json.content.parseJson().palabra}}",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "User-Agent",
+              "value": "BotProyecto/1.0"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        80,
+        800
+      ],
+      "id": "505422f7-a7a8-4329-94b0-1ccf06de4f22",
+      "name": "Wikipedia API"
+    },
+    {
+      "parameters": {
+        "url": "=https://geocoding-api.open-meteo.com/v1/search?name={{$('Message a model').item.json.content.parseJson().palabra}}&count=1&language=es&format=json",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        -48,
+        0
+      ],
+      "id": "673a4cd7-0faa-49e7-ad5d-d2a65930c6fa",
+      "name": "OpenMeteo API"
+    },
+    {
+      "parameters": {
+        "content": "## REST Countries\n\nEste nodo consulta la API **REST Countries**.\n\nSe utiliza para obtener información geográfica sobre países",
+        "width": 320
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -32,
+        176
+      ],
+      "typeVersion": 1,
+      "id": "05edf233-7543-43e1-b16c-c4a512c40672",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "content": "## OpenMeteo API\n\nEste nodo realiza una consulta a la API de **Open-Meteo**.\n\nPrimero se obtiene la localización geográfica de la ciudad solicitada y después se consulta el estado actual del clima.",
+        "width": 416,
+        "color": 2
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -96,
+        -176
+      ],
+      "typeVersion": 1,
+      "id": "7ee61648-e834-43f8-af50-d9a60b95830e",
+      "name": "Sticky Note1"
+    },
+    {
+      "parameters": {
+        "content": "## Switch\n\nEl nodo **Switch** actúa como sistema de enrutamiento.\n\nDependiendo de la categoría detectada por el modelo, el flujo se dirige a una API diferente.",
+        "height": 208,
+        "width": 256,
+        "color": 5
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -432,
+        640
+      ],
+      "typeVersion": 1,
+      "id": "8c38448a-2248-486e-9698-25d241f14b26",
+      "name": "Sticky Note2"
+    },
+    {
+      "parameters": {
+        "content": "## Message a model (Ollama)\nEste nodo utiliza un modelo de lenguaje ejecutado de jarvis.",
+        "height": 96,
+        "width": 336,
+        "color": 4
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -752,
+        304
+      ],
+      "typeVersion": 1,
+      "id": "fa45b72b-7640-43a7-9b3e-c003091add23",
+      "name": "Sticky Note3"
+    },
+    {
+      "parameters": {
+        "content": "## Edit Fields\nEste nodo prepara los datos recibidos desde Telegram.\n",
+        "height": 112
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -1040,
+        304
+      ],
+      "typeVersion": 1,
+      "id": "e8d47896-b7d9-4dd9-b85e-d75a573cd552",
+      "name": "Sticky Note4"
+    },
+    {
+      "parameters": {
+        "content": "## Telegram Trigger\n\nEste nodo actúa como punto de entrada del sistema.",
+        "height": 128,
+        "width": 288,
+        "color": 6
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -1440,
+        304
+      ],
+      "typeVersion": 1,
+      "id": "d252862a-430c-4ce8-af55-4b90a3cdfe43",
+      "name": "Sticky Note5"
+    },
+    {
+      "parameters": {
+        "content": "## Wikipedia API\n\nEste nodo consulta la API pública de Wikipedia.\n\nSe utiliza para obtener un resumen de un concepto, lugar o persona solicitado por el usuario.\n\nLa API devuelve información en formato JSON que posteriormente será procesada por el modelo.",
+        "width": 384,
+        "color": 4
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -48,
+        624
+      ],
+      "typeVersion": 1,
+      "id": "bd3ba78b-de73-4682-be5d-db1d62352a71",
+      "name": "Sticky Note6"
+    },
+    {
+      "parameters": {
+        "content": "## Respuesta con API (Ollama)\n\nEste nodo vuelve a utilizar el modelo de lenguaje para generar la respuesta final.",
+        "height": 176,
+        "width": 256,
+        "color": 6
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        448,
+        256
+      ],
+      "typeVersion": 1,
+      "id": "3d482723-b0be-4e9e-b4c0-1ea42728244b",
+      "name": "Sticky Note7"
+    },
+    {
+      "parameters": {
+        "content": "## Trimear respuesta\n\nEste nodo utiliza un pequeño script en JavaScript para limpiar la respuesta generada.\n\nSe eliminan posibles espacios o caracteres innecesarios para asegurar que el mensaje final tenga un formato correcto antes de guardarlo en la base de datos.\n",
+        "height": 240,
+        "width": 320,
+        "color": 3
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        736,
+        560
+      ],
+      "typeVersion": 1,
+      "id": "a2468d5b-9c2e-49c4-b83a-3c7d54406226",
+      "name": "Sticky Note8"
+    },
+    {
+      "parameters": {
+        "content": "## Insert rows in a table\n\nEste nodo guarda la conversación en **PostgreSQL**.",
+        "height": 128,
+        "width": 272,
+        "color": 7
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        1056,
+        320
+      ],
+      "typeVersion": 1,
+      "id": "cab81cca-471b-4a01-8554-7f35be2a2a43",
+      "name": "Sticky Note9"
+    },
+    {
+      "parameters": {
+        "content": "## Send a text message\n\nEste es el último nodo del workflow.\n\nSu función es enviar la respuesta generada al usuario a través del bot de Telegram, completando así el ciclo de la conversación.",
+        "height": 272,
+        "color": 2
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        1792,
+        144
+      ],
+      "typeVersion": 1,
+      "id": "d853c574-9ba5-461d-88a1-363e99a2a807",
+      "name": "Sticky Note10"
+    },
+    {
+      "parameters": {
+        "content": "## Select rows from a table\n\nEste nodo permite consultar los registros almacenados en la base de datos.\n\nSe utiliza principalmente para comprobar que los datos se están guardando correctamente.",
+        "height": 208,
+        "width": 320
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        1376,
+        608
+      ],
+      "typeVersion": 1,
+      "id": "24f92d46-3a20-4e0f-9e04-1bee97964f68",
+      "name": "Sticky Note11"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Telegram Trigger": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Message a model",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Message a model": {
+      "main": [
+        [
+          {
+            "node": "Switch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch": {
+      "main": [
+        [
+          {
+            "node": "OpenMeteo API",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "REST Countries",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Wikipedia API",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Respuesta con API",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Respuesta con API": {
+      "main": [
+        [
+          {
+            "node": "Trimear respuesta",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Insert rows in a table": {
+      "main": [
+        [
+          {
+            "node": "Select rows from a table",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Select rows from a table": {
+      "main": [
+        [
+          {
+            "node": "Send a text message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "MeteoAPI": {
+      "main": [
+        [
+          {
+            "node": "Respuesta con API",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "REST Countries": {
+      "main": [
+        [
+          {
+            "node": "Respuesta con API",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wikipedia API": {
+      "main": [
+        [
+          {
+            "node": "Respuesta con API",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Trimear respuesta": {
+      "main": [
+        [
+          {
+            "node": "Insert rows in a table",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenMeteo API": {
+      "main": [
+        [
+          {
+            "node": "MeteoAPI",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "availableInMCP": false
+  },
+  "versionId": "e9785392-dbf3-4300-a4aa-9491c98662d7",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "db3445b26cc3c17641a9a8bc4f4cf078d4056290df63f9405768f54411d64d80"
+  },
+  "id": "3Sn-qXUCStVdXQRLPsyVF",
+  "tags": []
+}
